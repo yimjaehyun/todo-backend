@@ -19,6 +19,12 @@ class todoItem {
 	}
 }
 
+function isIsoDate(str) {
+  if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/.test(str)) return false;
+  var d = new Date(str); 
+  return d.toISOString()===str;
+}
+
 var DB = {}
 
 // Get all items in our TODO
@@ -30,8 +36,12 @@ app.get('/items', (req, res) => {
 app.post('/add/item', (req, res) => {
 	// Required fields verification
 	const description = req.body.description
-	const deadline = req.body.deadline
+	var deadline = req.body.deadline
 	const file = req.files.file
+
+	if (!description || !deadline) {
+		res.status(400).send("Description and Deadline fields are required.")
+	}
 
 	// Add attachment to DB, using local storage for simplicity
 	file.mv('./attachments/'+file.name, function(err) {
@@ -42,9 +52,12 @@ app.post('/add/item', (req, res) => {
 		}
 	})
 
-	if (!description || !deadline) {
-		res.status(400).send("Description and Deadline fields are required.")
+	// Verify Date is in correct format and parse it
+	if (!isIsoDate(deadline)) {
+		res.status(400).send("Please use valid UTC Date format: YYYY-MM-DDTHH:MN:SS.MSSZ")
 	}
+
+	deadline = new Date(deadline)
 
 	// Add to db, using local storage for simplicity
 	var itemKey = Object.keys(DB).length // use length as key
