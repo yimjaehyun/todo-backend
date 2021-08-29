@@ -19,12 +19,13 @@ class todoItem {
 
 var DB = {}
 
+// Get all items in our TODO
 app.get('/items', (req, res) => {
-
+	res.send(DB)
 })
 
+// Add new TODO item
 app.post('/add/item', (req, res) => {
-	console.log(req.body)
 	// Required fields verification
 	const description = req.body.description
 	const deadline = req.body.deadline
@@ -40,6 +41,20 @@ app.post('/add/item', (req, res) => {
 	DB[itemKey] = itemObj
 	// Since using local storage, always send success
 	res.status(200).send({[itemKey]: itemObj})
+})
+
+// Make todo item as complete
+app.post('/complete/item/:itemId', (req, res) => {
+	// Required fields verification
+	const itemId = req.params.itemId
+	const isComplete = req.body.isComplete
+
+	if (!itemId || !isComplete) {
+		res.status(400).send("itemId and isComplete fields are required.")
+	}
+
+	DB[itemId].isComplete = isComplete
+	res.status(200).send({[itemId] : DB[itemId]})
 })
 
 app.listen(port, () => {
