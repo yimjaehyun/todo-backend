@@ -13,16 +13,13 @@ class todoItem {
 		this.description = description
 		this.deadline = deadline
 		this.attachment = attachment
+		this.isComplete = false
 	}
 }
 
 var DB = {}
 
 app.get('/items', (req, res) => {
-
-})
-
-app.get('/items/:id', (req, res) => {
 
 })
 
