@@ -43,7 +43,7 @@ var DB = {}
 
 // Get all items in our TODO
 app.get('/items', (req, res) => {
-	res.send(Object.values(DB))
+	return res.send(Object.values(DB))
 })
 
 // Add new TODO item
@@ -68,13 +68,7 @@ app.post('/add/item', (req, res) => {
 	// Add attachment to DB, using local storage for simplicity
 	if (req.files) {
 		file = req.files.file
-		file.mv('./attachments/'+file.name, function(err) {
-			if (err) {
-				return res.status(400).send(err)
-			} else {
-				console.log("File uploaded successfully")
-			}
-		})
+		file.mv('./attachments/'+file.name)
 	}
 
 	// Add to db, using local storage for simplicity
