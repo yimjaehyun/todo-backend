@@ -13,7 +13,7 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(upload())
 
-const port = 8000
+const port = process.env.PORT || 8000
 
 class todoItem {
 	constructor(id, description, deadline, attachment) {
